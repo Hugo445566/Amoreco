@@ -75,6 +75,7 @@
             transform: translateX(-50%);
             z-index: 10;
             display: flex;
+            flex-wrap: wrap; /* Ajuda a não quebrar no celular */
             gap: 10px;
             background: rgba(255, 255, 255, 0.1);
             padding: 8px 12px;
@@ -104,8 +105,6 @@
             background: linear-gradient(45deg, #ff3366, #9933ff);
             box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
         }
-
-        .aba-cadeado { color: #aaa; }
 
         .btn-voltar {
             position: absolute;
@@ -139,7 +138,7 @@
     <div class="container-abas">
         <button class="aba ativa" onclick="mudarAba(0)">O Início</button>
         <button class="aba" onclick="mudarAba(1)">Nossos Destinos</button>
-        <button class="aba aba-cadeado" onclick="tentarAbrirFuturo()">O Futuro 🔒</button>
+        <button class="aba" onclick="mudarAba(2)">08/03 ❤️</button>
     </div>
 
     <script>
@@ -153,6 +152,11 @@
                 titulo: "Nascidos para se Encontrar",
                 data: "08/09 e 14/09",
                 texto: "Muito antes de nos conhecermos, o universo já havia desenhado nossos destinos. Nossas estrelas nasceram em dias diferentes, mas foram feitas para se alinharem e formarem uma única e linda constelação."
+            },
+            {
+                titulo: "O início do namoro",
+                data: "08 de Março",
+                texto: "Neste dia 8 de março, o céu brilha mais forte em nossa homenagem. As estrelas se alinharam no firmamento para desenhar o maior símbolo do que eu sinto por você. O início oficial da nossa história mais linda! ❤️💍"
             }
         ];
 
@@ -174,8 +178,7 @@
         window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
         window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
 
-        // --- 3. DEFININDO AS CONSTELAÇÕES MAIS PARA BAIXO ---
-        // Aumentei o valor do 'y' de todas as estrelas para empurrá-las para o fundo da tela
+        // --- DEFININDO AS CONSTELAÇÕES ---
         
         // Aba 0: A constelação do início 
         const constelacaoInicio = [
@@ -186,12 +189,22 @@
 
         // Aba 1: Duas Constelações que se ligam (Nascimentos)
         const constelacaoNascimento = [
-            // Lado Esquerdo (08/09)
             {x: 0.20, y: 0.85}, {x: 0.25, y: 0.70}, {x: 0.35, y: 0.60}, {x: 0.40, y: 0.73}, 
-            // O Elo de Ligação (Centro da tela)
             {x: 0.50, y: 0.77}, 
-            // Lado Direito (14/09)
             {x: 0.60, y: 0.73}, {x: 0.65, y: 0.60}, {x: 0.75, y: 0.70}, {x: 0.80, y: 0.85}
+        ];
+
+        // Aba 2: Constelação em formato de CORAÇÃO ❤️
+        const constelacaoCoracao = [ 
+            {x: 0.50, y: 0.80}, // Ponta de baixo
+            {x: 0.35, y: 0.65}, // Curva inferior esquerda
+            {x: 0.35, y: 0.50}, // Parede esquerda
+            {x: 0.42, y: 0.42}, // Topo esquerdo
+            {x: 0.50, y: 0.52}, // Centro do coração
+            {x: 0.58, y: 0.42}, // Topo direito
+            {x: 0.65, y: 0.50}, // Parede direita
+            {x: 0.65, y: 0.65}, // Curva inferior direita
+            {x: 0.50, y: 0.80}  // Fecha o desenho
         ];
 
         class Estrela {
@@ -247,7 +260,12 @@
         }
 
         function atualizarAlvos(index) {
-            let layout = index === 0 ? constelacaoInicio : constelacaoNascimento;
+            let layout;
+            // Define qual constelação mostrar
+            if (index === 0) layout = constelacaoInicio;
+            else if (index === 1) layout = constelacaoNascimento;
+            else layout = constelacaoCoracao;
+
             let especiais = estrelas.filter(e => e.ehEspecial); 
             
             for (let i = 0; i < especiais.length; i++) {
@@ -302,8 +320,9 @@
 
         function mudarAba(index) {
             const abas = document.querySelectorAll('.aba');
-            abas[0].classList.remove('ativa');
-            abas[1].classList.remove('ativa');
+            // Remove a classe 'ativa' de todas as abas
+            abas.forEach(aba => aba.classList.remove('ativa'));
+            // Adiciona a classe 'ativa' na aba clicada
             abas[index].classList.add('ativa'); 
 
             const titulo = document.getElementById("titulo-aba");
@@ -319,10 +338,6 @@
             texto.innerText = conteudos[index].texto;
 
             atualizarAlvos(index);
-        }
-
-        function tentarAbrirFuturo() {
-            alert("Acesso Negado 🔒\n\nAs estrelas deste dia ainda estão se alinhando. Algumas surpresas exigem que o tempo passe para se revelarem na hora perfeita...");
         }
 
         iniciarCanvas(); 
